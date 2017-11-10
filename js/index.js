@@ -1,42 +1,55 @@
-$( document ).ready(function() {
-    console.log( "ready!" );
-var html = document.getElementsByTagName('html')[0]
-var buttoncont = $('#buttons-container')
-var b = $('.buttons')
-var badB = $('.buttons')[0]
-var clear = $('#clear')
-b.click(calc)
+function calc(input) {
+return eval(input)
 
-  function calc(a) {
-    let buttonhit = a.target.innerHTML
-    console.log("this is" + a.target)
+}
 
-    if (buttonhit === 'C' && a.target !== badB &&
-    a.target !== buttoncont && a.target !== html) {
+function replaceChars(a, screen, isGood) {
+  let buttonhit = a.target.innerHTML
+  console.log("this is" + a.target)
+
+  if (buttonhit === 'C' && isGood) {
     buttonhit = null
-    $('#screen').html('')
-}
-    else if (buttonhit === 'x' && a.target !== badB &&
-    a.target !== buttoncont && a.target !== html) {
-      const mult = '*'
-      $('#screen').append(mult)
-}
-
-    else if (buttonhit === '÷' && a.target !== badB &&
-    a.target !== buttoncont && a.target !== html) {
-      const div = '/'
-      $('#screen').append(div)
-}
-    else if (buttonhit === '=' && a.target !== badB &&
-    a.target !== buttoncont && a.target !== html) {
-      let input = $('#screen').html()
-      let output = eval(input)
-      console.log(output)
-      $('#screen').html(output)
+    screen = ''
+  }
+  else if (buttonhit === 'x' && isGood) {
+    const mult = '*'
+    screen+= mult
+  }
+  else if (buttonhit === '÷' && isGood) {
+    const div = '/'
+    screen += div
+  }
+  else if (buttonhit === '=' && isGood) {
+    return screen;
+  }
+  else if (isGood) {
+    screen += buttonhit
+  }
+  return screen;
 }
 
-    else if(a.target !== badB && a.target !== buttoncont && a.target !== html) {
-      $('#screen').append(buttonhit)
+function testForGoodB(a, badB, buttoncont, html){
+  return a.target !== badB && a.target !== buttoncont && a.target !== html
 }
-}
+
+$(document).ready(function() {
+  console.log("ready!");
+  var html = document.getElementsByTagName('html')[0]
+  var buttoncont = $('#buttons-container')
+  var button = $('.buttons')
+  var badB = $('.buttons')[0]
+  var clear = $('#clear')
+  button.click(function(e){
+    var isGood = testForGoodB(e, badB, buttoncont, html)
+    var screen = $('#screen').html()
+    var cleanInput = replaceChars(e, screen, isGood)
+    var result = cleanInput
+    $("#screen").html(result)
+    if(e.target.innerHTML === '=') {
+    result = calc(cleanInput)
+    $("#screen").html(result)
+  }
+  })
+
+
 });
